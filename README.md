@@ -1,1 +1,1 @@
-# ABAP / ABAP OO
+# ABAP
