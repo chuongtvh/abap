@@ -1,0 +1,15 @@
+METHODS: generate_guid RETURNING value(rv_guid) TYPE string.
+ 
+ 
+METHOD generate_guid.
+ 
+  DATA: lv_guid TYPE sysuuid_x16.
+*---------------------------------------------------------------------
+ 
+  TRY.
+      lv_guid = cl_system_uuid=>create_uuid_x16_static( ).
+      rv_guid = lv_guid."rv_guid = '0050568922A21ED480A0965ED54B7406'
+    CATCH cx_uuid_error.
+  ENDTRY.
+ 
+ENDMETHOD.                    "generate_guid​
