@@ -1,0 +1,43 @@
+TYPE-POOLS: sscr.
+
+TABLES: bkpf.
+
+SELECT-OPTIONS: s_budat FOR bkpf-budat,
+                s_budat1 FOR bkpf-budat.
+ 
+INITIALIZATION.
+  PERFORM restrict_opt.
+ 
+FORM restrict_opt.
+ 
+  DATA: lv_restrict TYPE sscr_restrict,
+        lv_optlist  TYPE sscr_opt_list,
+        lv_ass      TYPE sscr_ass.
+ 
+  lv_optlist-name = 'KEY1'.
+  lv_optlist-options-eq = 'X'.
+  lv_optlist-options-bt = 'X'.
+  APPEND lv_optlist TO lv_restrict-opt_list_tab.
+ 
+  lv_ass-kind = 'S'.
+  lv_ass-name = 'S_BUDAT'.
+  lv_ass-sg_main = 'I'.
+  lv_ass-sg_addy = space.
+  lv_ass-op_main = 'KEY1'.
+  APPEND lv_ass TO lv_restrict-ass_tab.
+ 
+  CALL FUNCTION 'SELECT_OPTIONS_RESTRICT'
+    EXPORTING
+      restriction            = lv_restrict
+    EXCEPTIONS
+      too_late               = 1
+      repeated               = 2
+      selopt_without_options = 3
+      selopt_without_signs   = 4
+      invalid_sign           = 5
+      empty_option_list      = 6
+      invalid_kind           = 7
+      repeated_kind_a        = 8
+      OTHERS                 = 9.
+ 
+ENDFORM.                    "restrict_opt
