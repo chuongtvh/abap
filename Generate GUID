@@ -1,7 +1,7 @@
 METHOD generate_guid.
 
   DATA: lv_guid TYPE sysuuid_x16.
-*---------------------------------------------------------------------
+*--------------------------------------------------------------------*
 
   TRY.
       lv_guid = cl_system_uuid=>create_uuid_x16_static( ).
