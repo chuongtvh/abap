@@ -1,12 +1,14 @@
-REPORT  zabap.
+REPORT zabap.
 
 TYPE-POOLS: sscr.
 
 TABLES: bkpf.
 
 *--------------------------------------------------------------------*
-SELECT-OPTIONS: s_budat FOR bkpf-budat,
-                s_budat1 FOR bkpf-budat.
+SELECT-OPTIONS: s_bukrs FOR bkpf-bukrs,
+                s_bukrs1 FOR bkpf-bukrs,
+                s_bukrs2 FOR bkpf-bukrs,
+                s_bukrs3 FOR bkpf-bukrs.
 
 *--------------------------------------------------------------------*
 INITIALIZATION.
@@ -20,19 +22,40 @@ FORM restrict_selopt.
         lv_ass      TYPE sscr_ass.
 *--------------------------------------------------------------------*
 
+  CLEAR lv_optlist.
   lv_optlist-name = 'KEY1'.
   lv_optlist-options-eq = 'X'.
   lv_optlist-options-bt = 'X'.
   APPEND lv_optlist TO lv_restrict-opt_list_tab.
 
+  CLEAR lv_optlist.
+  lv_optlist-name = 'KEY2'.
+  lv_optlist-options-eq = 'X'.
+  APPEND lv_optlist TO lv_restrict-opt_list_tab.
 
+* No Exclude Tabs
   lv_ass-kind = 'S'.
-  lv_ass-name = 'S_BUDAT'.
+  lv_ass-name = 'S_BUKRS1'.
   lv_ass-sg_main = 'I'.
   lv_ass-sg_addy = space.
   lv_ass-op_main = 'KEY1'.
   APPEND lv_ass TO lv_restrict-ass_tab.
 
+* No Multiple Selection Button
+  lv_ass-kind = 'S'.
+  lv_ass-name = 'S_BUKRS2'.
+  lv_ass-sg_main = 'I'.
+  lv_ass-sg_addy = 'N'.
+  lv_ass-op_main = 'KEY1'.
+  APPEND lv_ass TO lv_restrict-ass_tab.
+
+* Selopt like Parameter
+  lv_ass-kind = 'S'.
+  lv_ass-name = 'S_BUKRS3'.
+  lv_ass-sg_main = 'I'.
+  lv_ass-sg_addy = 'N'.
+  lv_ass-op_main = 'KEY2'.
+  APPEND lv_ass TO lv_restrict-ass_tab.
 
   CALL FUNCTION 'SELECT_OPTIONS_RESTRICT'
     EXPORTING
