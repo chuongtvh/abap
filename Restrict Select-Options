@@ -49,7 +49,7 @@ FORM restrict_selopt.
   lv_ass-op_main = 'KEY1'.
   APPEND lv_ass TO lv_restrict-ass_tab.
 
-* Selopt like Parameter
+* Selopt like Parameter (used in case of LDB)
   lv_ass-kind = 'S'.
   lv_ass-name = 'S_BUKRS3'.
   lv_ass-sg_main = 'I'.
