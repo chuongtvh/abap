@@ -2,9 +2,9 @@ REPORT zabap.
 
 CONSTANTS: c_form_name     TYPE tdsfname VALUE 'Z_SMTF',
            c_output_device TYPE rspopname VALUE 'LOCL'.
-
-
 *--------------------------------------------------------------------*
+
+
 CLASS lcl_test DEFINITION.
 
   PUBLIC SECTION.
