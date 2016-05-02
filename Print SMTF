@@ -1,12 +1,13 @@
 REPORT zabap.
 
+CONSTANTS: c_form_name     TYPE tdsfname VALUE 'Z_SMTF',
+           c_output_device TYPE rspopname VALUE 'LOCL'.
 
+
+*--------------------------------------------------------------------*
 CLASS lcl_test DEFINITION.
 
   PUBLIC SECTION.
-
-    CONSTANTS: c_form_name     TYPE tdsfname VALUE 'ZZ_SMTF',
-               c_output_device TYPE rspopname VALUE 'LOCL'.
 
     CLASS-METHODS: main.
 
@@ -33,7 +34,7 @@ CLASS lcl_test IMPLEMENTATION.
 
   METHOD constructor.
 
-    go_test->print_smtf( c_form_name ).
+    me->print_smtf( c_form_name ).
 
   ENDMETHOD.                    "constructor
 
@@ -60,23 +61,27 @@ CLASS lcl_test IMPLEMENTATION.
     IF sy-subrc <> 0.
       MESSAGE s499(sy) WITH 'Error code' sy-subrc
                        DISPLAY LIKE 'E'.
+
     ELSE.
+
 *..   Control structure
-      ls_control_param-device = 'PRINTER'."PRINTER, SCREEN, TELEFAX, MAIL
-*      ls_control_param-no_dialog = 'X'."Open print dialog
-*      ls_control_param-preview = 'X'."Print preview when NO_DIALOG = 'X'
-*      ls_control_param-getotf = 'X'."Get OTF data
+      ls_control_param-device = 'PRINTER'.        "PRINTER, SCREEN, TELEFAX, MAIL
+*      ls_control_param-no_dialog = 'X'.          "No print dialog
+*      ls_control_param-preview = 'X'.            "Print preview when NO_DIALOG = 'X'
+*      ls_control_param-getotf = 'X'.             "Get OTF data
+
 
 *..   Transfer options
-      ls_output_options-tdtitle = 'Print SMTF'."Title in dialog box
-*      ls_output_options-tdnoprev = 'X'."No print preview
-*      ls_output_options-tdnoprint = 'X'."No printing
-      ls_output_options-tddest = c_output_device."Output device, ex: LOCL
-*      ls_output_options-tdimmed = 'X'."Print immediately
-      ls_output_options-tdnewid = 'X'."Create new Spool ID
-*      ls_output_options-tddelete = 'X'."Delete After Printing
-*      ls_output_options-tdlifetime = 1."Retention days in Spool
-*      ls_output_options-tdcopies = 2."Number of Copies
+      ls_output_options-tdtitle = 'Print SMTF'.   "Title in dialog box
+*      ls_output_options-tdnoprev = 'X'.          "No print preview
+*      ls_output_options-tdnoprint = 'X'.         "No print in print preview
+      ls_output_options-tddest = c_output_device. "Output device, ex: LOCL
+*      ls_output_options-tdimmed = 'X'.           "Print immediately
+      ls_output_options-tdnewid = 'X'.            "Create new Spool ID
+*      ls_output_options-tddelete = 'X'.          "Delete After Printing
+*      ls_output_options-tdlifetime = 1.          "Retention days in Spool
+*      ls_output_options-tdcopies = 2.            "Number of Copies
+
 
 *..   Call FM to print SMTF
       CALL FUNCTION lv_fm_name
