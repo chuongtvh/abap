@@ -1,0 +1,117 @@
+REPORT zabap.
+
+
+CLASS lcl_test DEFINITION.
+
+  PUBLIC SECTION.
+
+    CONSTANTS: c_form_name     TYPE tdsfname VALUE 'ZZ_SMTF',
+               c_output_device TYPE rspopname VALUE 'LOCL'.
+
+    CLASS-METHODS: main.
+
+    METHODS: constructor.
+
+*--------------------------------------------------------------------*
+  PRIVATE SECTION.
+
+    CLASS-DATA: go_test TYPE REF TO lcl_test.
+
+    METHODS: print_smtf IMPORTING iv_form_name TYPE tdsfname.
+
+ENDCLASS.                    "lcl_test DEFINITION
+
+
+CLASS lcl_test IMPLEMENTATION.
+
+  METHOD main.
+
+    CREATE OBJECT go_test.
+
+  ENDMETHOD.                    "main
+
+
+  METHOD constructor.
+
+    go_test->print_smtf( c_form_name ).
+
+  ENDMETHOD.                    "constructor
+
+
+  METHOD print_smtf.
+
+    DATA: lv_fm_name         TYPE rs38l_fnam,
+          ls_control_param   TYPE ssfctrlop,
+          ls_output_options  TYPE ssfcompop,
+          ls_job_output_info TYPE ssfcrescl.
+*--------------------------------------------------------------------*
+
+*.. Get FM name of SMTF
+    CALL FUNCTION 'SSF_FUNCTION_MODULE_NAME'
+      EXPORTING
+        formname           = iv_form_name
+      IMPORTING
+        fm_name            = lv_fm_name
+      EXCEPTIONS
+        no_form            = 1
+        no_function_module = 2
+        OTHERS             = 3.
+
+    IF sy-subrc <> 0.
+      MESSAGE s499(sy) WITH 'Error code' sy-subrc
+                       DISPLAY LIKE 'E'.
+    ELSE.
+*..   Control structure
+      ls_control_param-device = 'PRINTER'."PRINTER, SCREEN, TELEFAX, MAIL
+*      ls_control_param-no_dialog = 'X'."Open print dialog
+*      ls_control_param-preview = 'X'."Print preview when NO_DIALOG = 'X'
+*      ls_control_param-getotf = 'X'."Get OTF data
+
+*..   Transfer options
+      ls_output_options-tdtitle = 'Print SMTF'."Title in dialog box
+*      ls_output_options-tdnoprev = 'X'."No print preview
+*      ls_output_options-tdnoprint = 'X'."No printing
+      ls_output_options-tddest = c_output_device."Output device, ex: LOCL
+*      ls_output_options-tdimmed = 'X'."Print immediately
+      ls_output_options-tdnewid = 'X'."Create new Spool ID
+*      ls_output_options-tddelete = 'X'."Delete After Printing
+*      ls_output_options-tdlifetime = 1."Retention days in Spool
+*      ls_output_options-tdcopies = 2."Number of Copies
+
+*..   Call FM to print SMTF
+      CALL FUNCTION lv_fm_name
+        EXPORTING
+          control_parameters = ls_control_param
+          output_options     = ls_output_options
+          user_settings      = ''
+        IMPORTING
+          job_output_info    = ls_job_output_info
+        EXCEPTIONS
+          formatting_error   = 1
+          internal_error     = 2
+          send_error         = 3
+          user_canceled      = 4
+          OTHERS             = 5.
+
+      CASE sy-subrc.
+        WHEN 1.
+          MESSAGE s899(mm) WITH 'Formatting Error'
+                           DISPLAY LIKE 'E'.
+        WHEN 2 OR 3.
+          MESSAGE s899(mm) WITH 'Internal or Send Error'
+                           DISPLAY LIKE 'E'.
+        WHEN 4.
+          MESSAGE s899(mm) WITH 'User Cancelled'.
+      ENDCASE.
+    ENDIF.
+
+  ENDMETHOD.                    "print_smtf
+
+ENDCLASS.                    "lcl_test IMPLEMENTATION
+
+
+*--------------------------------------------------------------------*
+* START-OF-SELECTION
+*--------------------------------------------------------------------*
+START-OF-SELECTION.
+  lcl_test=>main( ).
