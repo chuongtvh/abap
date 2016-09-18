@@ -1,0 +1,27 @@
+DESCRIBE TABLE lt_sf_data LINES lv_lines.
+
+  LOOP AT lt_sf_data INTO ls_sf_data.
+
+*       Open 1 spool only for all Check SMTFs
+    CASE sy-tabix.
+
+      WHEN 1."First
+
+        ls_control-no_open = space.
+        ls_control-no_close = 'X'.
+
+      WHEN lv_lines."Last
+
+        ls_control-no_open = 'X'.
+        ls_control-no_close = space.
+
+      WHEN OTHERS.
+
+        ls_control-no_open = 'X'.
+        ls_control-no_close = 'X'.
+
+    ENDCASE.
+        
+    CALL FUNCTION lv_fname.
+         
+  ENDLOOP.
